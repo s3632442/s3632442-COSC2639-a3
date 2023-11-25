@@ -147,17 +147,23 @@
         method: 'POST',
         body: formData
     })
-    .then(response => response.text())
+    .then(response => response.json())
     .then(result => {
         console.log(result);
         // Handle success or failure on the frontend as needed
+        if (result.message === 'Image uploaded successfully') {
+            // Reload the page after successful upload
+            window.location.reload();
+        } else {
+            // Handle failure
+            // You can display an error message or take other actions
+        }
     })
     .catch(error => {
         console.error('Error:', error);
         // Handle error on the frontend
     });
 }
-
 
     function updateContentWithVehicleImages(vehicleId) {
         const contentArea = document.getElementById("contentArea");

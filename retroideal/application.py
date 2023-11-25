@@ -162,6 +162,6 @@ def upload_image():
         return jsonify({'error': str(e)})
 
 if __name__ == "__main__":
-    init()
+    #init()
     #delete_resources()
     app.run(host='0.0.0.0')

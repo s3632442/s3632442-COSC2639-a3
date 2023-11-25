@@ -42,8 +42,10 @@ def login():
 
                 # Redirect to the user page or any other route as needed
                 return redirect(url_for("user_home"))
-            else:
-                return render_template("login.html", error="Invalid username or password")
+        users = fetch_users()
+        # If authentication fails, render the login template with an error message
+        return render_template("login.html", error="Invalid username or password", users=users)
+
             
 @app.route("/user_home/<userid>/vehicles")
 def get_user_vehicles(userid):

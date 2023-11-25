@@ -1,0 +1,84 @@
+/* Navbar styles */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #333;
+    color: white;
+    padding: 10px 20px;
+}
+
+/* Retro Ideal font styling */
+.retro-font {
+    font-family: 'Your Retro Font', cursive; /* Add your desired retro font family */
+    font-size: 24px; /* Adjust font size */
+    cursor: pointer;
+}
+
+/* Welcome section styling */
+.banner-section {
+    text-align: center;
+}
+
+/* Cursive font for welcome message */
+.cursive-font {
+    font-family: 'Your Cursive Font', cursive; /* Add your desired cursive font family */
+    font-size: 18px; /* Adjust font size */
+    margin-bottom: 5px; /* Adjust margin as needed */
+    cursor: pointer;
+}
+
+/* Footer styles */
+.footer {
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 10px;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+
+/* Content styles */
+.content {
+    margin-left: 200px; /* Adjust the width of the side panel */
+    padding: 20px;
+}
+
+/* Side panel styles */
+.side-panel {
+    height: 100%;
+    width: 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: #111;
+    overflow-x: hidden;
+    transition: 0.5s;
+    padding-top: 60px;
+}
+
+.side-panel a {
+    padding: 8px 8px 8px 32px;
+    text-decoration: none;
+    font-size: 25px;
+    color: #818181;
+    display: block;
+    transition: 0.3s;
+}
+
+.side-panel a:hover {
+    color: #f1f1f1;
+}
+
+.side-panel .close-btn {
+    position: absolute;
+    top: 0;
+    right: 25px;
+}
+
+.gallery-image {
+    max-width: 25%;
+    height: auto; /* Maintain aspect ratio */
+    margin: 10px; /* Add margin between images */
+}

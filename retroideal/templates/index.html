@@ -3,6 +3,24 @@
 <head>
     <title>Retroideal</title>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='index.css') }}">
+    <style>
+        /* Global body styles */
+        body {
+            background-image: url('https://d3baz1fr4rwp0i.cloudfront.net'); /* Image URL */
+            background-repeat: no-repeat;
+            background-size: cover;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            animation: animateBackground 20s ease infinite;
+        }
+
+        /* Rest of your existing CSS styles */
+        /* ... */
+    </style>
 </head>
 <body class="index">
     <div class="animated-bg"></div>

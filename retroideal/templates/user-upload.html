@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Page</title>
+    <title>Retro~Ideal</title>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" crossorigin="anonymous">
 
@@ -254,29 +254,30 @@ function updateSidePanel(vehicles) {
         // Clear existing content
         sidePanelContent.innerHTML = '';
 
-        // Add new registration numbers to the side panel
+        // Add new links to the side panel based on registration numbers
         vehicles.forEach(vehicle => {
-            const a = document.createElement("a");
-            a.href = '#';
-            a.onclick = function() {
-                // Update content with images for the selected vehicle
-                updateContentWithVehicleImages(vehicle.vh_id);
-            };
+            const regLink = document.createElement("a");
+            regLink.href = `/user_home/${vehicle.reg}/approved_images`;
+            regLink.appendChild(document.createTextNode(vehicle.reg));
 
-            // Create a span for the registration number
-            const regSpan = document.createElement("span");
-            regSpan.appendChild(document.createTextNode(vehicle.reg));
-            a.appendChild(regSpan);
-
-            // Create a span for the "+" icon
             const plusIcon = document.createElement("span");
-            plusIcon.innerHTML = '<i class="fas fa-plus" onclick="redirectToUploadPage(' + vehicle.vh_id + ')"></i>';
-            a.appendChild(plusIcon);
+            plusIcon.innerHTML = `<i class="fas fa-plus" onclick="redirectToPendingImages(${vehicle.vh_id})"></i>`;
+            regLink.appendChild(plusIcon);
 
-            sidePanelContent.appendChild(a);
+            sidePanelContent.appendChild(regLink);
+
+            // Add a separator
+            const separator = document.createTextNode(' | ');
+            sidePanelContent.appendChild(separator);
         });
     }
 }
+
+function redirectToPendingImages(vehicleId) {
+    // Redirect to the pending images route with the vehicle ID
+    window.location.href = `/upload/pending_images/${vehicleId}`;
+}
+
 
 function deleteImage(imageId) {
     const payload = {

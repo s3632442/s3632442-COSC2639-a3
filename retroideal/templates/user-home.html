@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Page</title>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" crossorigin="anonymous">
+
+
 </head>
 <body>
     <header class="navbar">
@@ -35,12 +38,53 @@
             {% endfor %}
         </div>
     </div>
+    
     <div class="footer">
         <!-- Placeholder content in the footer -->
         &copy; 2023 Your Company
     </div>
 <!-- Script to handle side panel open/close and load vehicle details -->
 <script>
+        function verifyImage(imageUrl) {
+    // Extract the filename from the image URL (assuming it's the last part after '/')
+    const filename = imageUrl.substring(imageUrl.lastIndexOf('/') + 1);
+
+    // Create the payload with the filename
+    const payload = {
+        filename: [filename]
+    };
+
+    console.log('Sending verification request for filename:', filename);
+
+    // Make a fetch request to the desired API endpoint
+    fetch('https://ok9ogdv6x0.execute-api.us-east-1.amazonaws.com/prod/DynamoDBManager', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Handle the response data as needed
+        console.log('Verification response:', data);
+        // Perform actions based on the verification response
+        window.location.reload();
+    })
+    .catch(error => {
+        console.error('Verification error:', error);
+        // Handle errors from the API call
+    });
+}
+
+
+    function deleteImage(imageUrl) {
+        // Add logic to delete the specified image URL
+        console.log('Deleting image:', imageUrl);
+        // Perform actions to delete the image from your system or gallery
+    }
+
+
     function openSidePanel() {
         document.getElementById("sidePanel").style.width = "200px"; // Adjust the width as needed
         loadVehicleDetails();
@@ -78,26 +122,72 @@
         }
     }
 
-    function updateSidePanel(vehicles) {
-        const sidePanelContent = document.getElementById("sidePanelContent");
+    function uploadFile() {
+    const fileInput = document.getElementById('fileInput');
+    const file = fileInput.files[0];
+    const userId = 'user123';  // Replace with the actual user ID from the session
 
-        if (sidePanelContent) {
-            // Clear existing content
-            sidePanelContent.innerHTML = '';
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('userid', userId);  // Send the user ID to the backend
 
-            // Add new registration numbers to the side panel
-            vehicles.forEach(vehicle => {
-                const a = document.createElement("a");
-                a.href = '#';
-                a.onclick = function() {
-                    // Handle click on registration number (if needed)
-                };
-                a.appendChild(document.createTextNode(vehicle.reg));
-
-                sidePanelContent.appendChild(a);
-            });
+    fetch('/upload_image', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(result => {
+        console.log(result);
+        // Handle success or failure on the frontend as needed
+        if (result.message === 'Image uploaded successfully') {
+            // Reload the page after successful upload
+            window.location.reload();
+        } else {
+            // Handle failure
+            // You can display an error message or take other actions
         }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        // Handle error on the frontend
+    });
+}
+
+    function updateContentWithVehicleImages(vehicleId) {
+        const contentArea = document.getElementById("contentArea");
+        const welcomeMessage = document.getElementById("welcomeMessage");
+        const imageGallery = document.getElementById("imageGallery");
+
+        // Hide the welcome message
+        welcomeMessage.style.display = "none";
+
+        // Clear existing content in the image gallery
+        imageGallery.innerHTML = '';
+
+        // Fetch images for the selected vehicle
+        fetch(`/user_home/${vehicleId}/images`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(images => {
+                // Display images in the image gallery
+                images.forEach(imageUrl => {
+                    const img = document.createElement("img");
+                    img.src = imageUrl;
+                    img.alt = "Vehicle Image";
+                    img.classList.add("gallery-image");
+
+                    imageGallery.appendChild(img);
+                });
+            })
+            .catch(error => {
+                console.error('Failed to fetch vehicle images:', error);
+            });
     }
+
 
     function logout() {
         // Clear the session data
@@ -112,6 +202,66 @@
                 console.error('Logout failed:', error);
             });
     }
+
+    function redirectToUploadPage(vehicleId) {
+    // Redirect to the upload page with the vehicleId
+    window.location.href = `/upload/${vehicleId}`;
+}
+
+function updateSidePanel(vehicles) {
+    const sidePanelContent = document.getElementById("sidePanelContent");
+
+    if (sidePanelContent) {
+        // Clear existing content
+        sidePanelContent.innerHTML = '';
+
+        // Add new registration numbers to the side panel
+        vehicles.forEach(vehicle => {
+            const a = document.createElement("a");
+            a.href = '#';
+            a.onclick = function() {
+                // Update content with images for the selected vehicle
+                updateContentWithVehicleImages(vehicle.vh_id);
+            };
+
+            // Create a span for the registration number
+            const regSpan = document.createElement("span");
+            regSpan.appendChild(document.createTextNode(vehicle.reg));
+            a.appendChild(regSpan);
+
+            // Create a span for the "+" icon
+            const plusIcon = document.createElement("span");
+            plusIcon.innerHTML = '<i class="fas fa-plus" onclick="redirectToUploadPage(' + vehicle.vh_id + ')"></i>';
+            a.appendChild(plusIcon);
+
+            sidePanelContent.appendChild(a);
+        });
+    }
+}
+
+function deleteImage(imageId) {
+    const payload = {
+        image_id: imageId
+    };
+
+    fetch('/delete_image', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log(data.message);
+        // Perform any necessary actions after successful deletion
+        window.location.reload();
+    })
+    .catch(error => {
+        console.error('Delete error:', error);
+        // Handle errors from the delete request
+    });
+}
 </script>
 
 </body>

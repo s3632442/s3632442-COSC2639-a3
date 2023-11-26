@@ -65,7 +65,7 @@ def fetch_pending_vehicle_image_data(userid):
     try:
         # Query the vehicle image table based on userid and status as "pending"
         response = table.scan(
-            FilterExpression=Attr('userid').eq(userid) & Attr('status').eq('pending')
+            FilterExpression=Attr('userid').eq(userid) & Attr('status').eq('pending') | Attr('status').eq('declined')
         )
         items = response['Items']
 

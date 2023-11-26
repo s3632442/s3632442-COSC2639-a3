@@ -82,3 +82,67 @@
     height: auto; /* Maintain aspect ratio */
     margin: 10px; /* Add margin between images */
 }
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+    border: 1px solid #ccc; /* Subtle border around the table */
+  }
+
+  th, td {
+    text-align: left;
+    padding: 8px;
+  }
+
+  th {
+    background-color: #333;
+    color: white;
+  }
+
+  tr:nth-child(even) {
+    background-color: #f2f2f2; /* Alternate row background color */
+  }
+
+  /* Table items with no data */
+  .empty-data {
+    text-align: center;
+    padding: 10px;
+    color: #666; /* Adjust color for empty data */
+  }
+
+  /* Button spacing */
+  .image-buttons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px; /* Space between buttons */
+  }
+
+  #UploadComponent {
+    margin-bottom: 20px; /* Add space between Upload Component and Table */
+  }
+
+  /* Style for Upload Component */
+  #uploadForm {
+    border: 2px dashed #ccc;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+  }
+
+  #fileInput {
+    margin-bottom: 10px;
+  }
+
+  #uploadBtn {
+    padding: 10px 20px;
+    background-color: #333;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  #uploadBtn:hover {
+    background-color: #555;
+  }

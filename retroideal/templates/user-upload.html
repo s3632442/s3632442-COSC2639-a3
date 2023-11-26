@@ -32,23 +32,46 @@
     </div>
     <div class="content" id="contentArea">
         <div id="UploadComponent">
-            <h2>Upload Component</h2>
+            <h2>Upload Your Images and Request Verification</h2>
             <form id="uploadForm" enctype="multipart/form-data">
-                <input type="file" id="fileInput" accept="image/*" />
-                <button type="button" onclick="uploadFile()">Upload</button>
+              <input type="file" id="fileInput" accept="image/*" />
+              <button type="button" id="uploadBtn" onclick="uploadFile()">Upload</button>
             </form>
-        </div>
+          </div>
         <div id="imageGallery">
             <div id="imageGallery">
-                {% for item in pending_vehicle_image_data %}
-                    <div class="image-container">
-                        <img src="{{ item['image-url'] }}" alt="Vehicle Image" class="gallery-image">
-                        <div class="image-buttons">
+                <table>
+                    <thead>
+                      <tr>
+                        <th style="width: 30%;">Image</th>
+                        <th style="width: 30%;">Status</th>
+                        <th style="width: 10%;">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for item in pending_vehicle_image_data %}
+                      <tr>
+                        <td>
+                          <div class="image-container">
+                            <img src="{{ item['image-url'] }}" alt="Vehicle Image" class="gallery-image">
+                          </div>
+                        </td>
+                        <td>{{ item['status'] }}</td>
+                        <td>
+                          <div class="image-buttons">
                             <button onclick="verifyImage('{{ item['image-url'] }}')">Verify</button>
                             <button onclick="deleteImage('{{ item['image-id'] }}')">Delete</button>
-                        </div>
-                    </div>
-                {% endfor %}
+                          </div>
+                        </td>
+                      </tr>
+                      {% endfor %}
+                      {% if pending_vehicle_image_data|length == 0 %}
+                      <tr>
+                        <td colspan="4" class="empty-data">No data available</td>
+                      </tr>
+                      {% endif %}
+                    </tbody>
+                  </table>
             </div>
             
         </div>
@@ -85,6 +108,7 @@
         // Handle the response data as needed
         console.log('Verification response:', data);
         // Perform actions based on the verification response
+        window.location.reload();
     })
     .catch(error => {
         console.error('Verification error:', error);

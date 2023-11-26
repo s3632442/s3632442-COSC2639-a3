@@ -58,9 +58,40 @@ def lambda_handler(event, context):
 
             # Compare image content using hash
             if hashlib.md5(pending_content).hexdigest() == hashlib.md5(approved_content).hexdigest():
-                results.append(f"{filename}: Match")
+                # Change status to 'declined' in DynamoDB
+                try:
+                    response = dynamodb.scan(
+                        TableName=table_name,
+                        FilterExpression='filename = :filename',
+                        ExpressionAttributeValues={':filename': {'S': filename}}
+                    )
+
+                    if response['Count'] > 0:
+                        image_id = response['Items'][0]['image-id']['S']
+
+                        # Update DynamoDB UpdateItem operation to set status to 'declined' and update URL using image-id
+                        update_response = dynamodb.update_item(
+                            TableName=table_name,
+                            Key={'image-id': {'S': image_id}},
+                            UpdateExpression='SET #status = :status, #image_url = :image_url',
+                            ExpressionAttributeNames={'#status': 'status', '#image_url': 'image-url'},
+                            ExpressionAttributeValues={
+                                ':status': {'S': 'declined'},
+                                ':image_url': {'S': f"https://{approved_bucket}.s3.amazonaws.com/{approved_key}"}
+                            }
+                        )
+                        print(f"DynamoDB Update Response for filename {filename}: {update_response}")
+
+                        results.append(f"{filename}: Status updated to 'declined'")
+                    else:
+                        results.append(f"{filename}: No item found in DynamoDB")
+
+                except Exception as e:
+                    print(f"Error processing filename {filename}: {e}")
+                    results.append(f"{filename}: Error processing - {e}")
+
                 match_found = True
-                break  # If a match is found, no need to check other approved images
+                break  # If a match is found, update status and break the loop
 
         if not match_found:
             try:

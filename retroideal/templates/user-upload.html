@@ -39,15 +39,18 @@
             </form>
         </div>
         <div id="imageGallery">
-            {% for image_url in image_urls %}
-                <div class="image-container">
-                    <img src="{{ image_url }}" alt="Vehicle Image" class="gallery-image">
-                    <div class="image-buttons">
-                        <button onclick="verifyImage('{{ image_url }}')">Verify</button>
-                        <button onclick="deleteImage('{{ image_url }}')">Delete</button>
+            <div id="imageGallery">
+                {% for item in pending_vehicle_image_data %}
+                    <div class="image-container">
+                        <img src="{{ item['image-url'] }}" alt="Vehicle Image" class="gallery-image">
+                        <div class="image-buttons">
+                            <button onclick="verifyImage('{{ item['image-url'] }}')">Verify</button>
+                            <button onclick="deleteImage('{{ item['image-id'] }}')">Delete</button>
+                        </div>
                     </div>
-                </div>
-            {% endfor %}
+                {% endfor %}
+            </div>
+            
         </div>
         
     </div>
@@ -249,6 +252,30 @@ function updateSidePanel(vehicles) {
             sidePanelContent.appendChild(a);
         });
     }
+}
+
+function deleteImage(imageId) {
+    const payload = {
+        image_id: imageId
+    };
+
+    fetch('/delete_image', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log(data.message);
+        // Perform any necessary actions after successful deletion
+        window.location.reload();
+    })
+    .catch(error => {
+        console.error('Delete error:', error);
+        // Handle errors from the delete request
+    });
 }
 </script>
 

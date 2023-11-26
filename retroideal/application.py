@@ -123,18 +123,14 @@ def upload():
             first_name = user.get("firstname")
             last_name = user.get("lastname")
 
-            # Fetch image URLs for the user's vehicles
-            image_urls = fetch_pending_images_by_userid(userid)
+            # Fetch pending vehicle image data for the user
+            pending_vehicle_image_data = fetch_pending_vehicle_image_data(userid)
 
             # Fetch all vehicle data for the user
             vehicles = fetch_vehicles_by_userid(userid)
 
-            # Print statements for debugging
-            print("User:", user)
-            print("Image URLs:", image_urls)
-            print("Vehicles:", vehicles)
+            return render_template("user-upload.html", first_name=first_name, last_name=last_name, pending_vehicle_image_data=pending_vehicle_image_data, vehicles=vehicles)
 
-            return render_template("user-upload.html", first_name=first_name, last_name=last_name, image_urls=image_urls)
 
 @app.route('/upload_image', methods=['POST'])
 def upload_image():
@@ -162,6 +158,20 @@ def upload_image():
         return jsonify({'error': 'Failed to upload image'})
     except Exception as e:
         return jsonify({'error': str(e)})
+    
+@app.route("/delete_image", methods=["POST"])
+def delete_image():
+    image_id = request.json.get('image_id')
+
+    try:
+        delete_image_using_image_id(image_id)
+        delete_entry_from_dynamodb(image_id)
+        return jsonify({"message": "Image deleted successfully"})
+    except Exception as e:
+        return jsonify({"message": f"Failed to delete image: {str(e)}"}), 500
+
+
+
 
 if __name__ == "__main__":
     #init()

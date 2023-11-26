@@ -58,7 +58,7 @@ def fetch_approved_images_by_userid(userid):
         print("Error fetching pending images:", e)
         return []
 
-def fetch_pending_images_by_userid(userid):
+def fetch_pending_vehicle_image_data(userid):
     dynamodb = boto3.resource('dynamodb')
     table = dynamodb.Table(vehicle_image_table)
 
@@ -69,14 +69,11 @@ def fetch_pending_images_by_userid(userid):
         )
         items = response['Items']
 
-        # Extract image URLs from the items
-        image_urls = [item['image-url'] for item in items]
-
         # Print statements for debugging
         print("Pending Image URLs for userid:", userid)
-        print(image_urls)
+        print(items)
 
-        return image_urls
+        return items
     except Exception as e:
         print("Error fetching pending images:", e)
         return []
@@ -111,3 +108,15 @@ def add_entry_to_vehicle_image_table(image_id, user_id, vehicle_id, image_url, s
         return "Entry added to DynamoDB table"
     except Exception as e:
         return str(e)
+    
+def delete_entry_from_dynamodb(image_id):
+    dynamodb = boto3.resource('dynamodb')
+    table = dynamodb.Table(vehicle_image_table)
+    try:
+        table.delete_item(
+            Key={
+                'image-id': image_id  
+            }
+        )
+    except Exception as e:
+        print(f"Error deleting entry from DynamoDB: {str(e)}")

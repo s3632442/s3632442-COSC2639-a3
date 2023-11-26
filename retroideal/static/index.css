@@ -1,6 +1,8 @@
 /* Global body styles */
 body {
-    background-color: #2b001a; /* Cherry black color */
+    background-image: url('https://d3baz1fr4rwp0i.cloudfront.net/180sx.jpg'); /* Image URL */
+    background-repeat: no-repeat;
+    background-size: cover;
     position: relative;
     overflow: hidden;
     display: flex;
@@ -8,8 +10,6 @@ body {
     align-items: center;
     height: 100vh;
     animation: animateBackground 20s ease infinite;
-    background-image: linear-gradient(45deg, #2b001a 25%, transparent 25%, transparent 50%, #2b001a 50%, #2b001a 75%, transparent 75%, transparent);
-    background-size: 40px 40px;
 }
 
 /* Styling for the login button on index.html */
